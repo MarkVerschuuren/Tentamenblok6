@@ -26,7 +26,7 @@ public class AnalyseFile {
                 GenA.add(lines[1]);
                 GenB.add(lines[6]);
                 UniqueInteractions.add(lines[4]);
-                TotalInteractions.add(new Gene(lines[1], lines[4],lines[0],lines[2], lines[3]));
+                TotalInteractions.add(new Gene(lines[1], lines[4],lines[0],lines[2], lines[3],lines[9]));
 
 
             }
@@ -50,7 +50,6 @@ public class AnalyseFile {
             Gene g1 = (Gene) inters.get(count);
             Gene g2 = (Gene) inters.get(count+1);
 
-          
 
             if (g1.getinter().equals(g2.getinter())) {
                 GenIdSet.add(g1.getGenID());

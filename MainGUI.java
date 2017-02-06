@@ -7,34 +7,37 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.*;
 
 public class MainGUI extends JFrame implements ActionListener {
     JLabel labelFile, labelSelect;
     JTextField textFieldFile;
     JTextArea textAreaInfo;
-    JButton buttonSearch, buttonOpen,buttonAnalyse, buttonExportGen, buttonExportPub;
+    JButton buttonSearch, buttonOpen, buttonAnalyse, buttonExportGen, buttonExportPub;
     JComboBox comboBoxLeft, comboBoxRight;
     JFileChooser fileChooser;
     JPanel panelVenn;
-    String key1,key2;
-    public MainGUI(){
+    String key1, key2;
+    Overlap overlapObj = new Overlap();
+    AnalyseFile AnalyseObj = new AnalyseFile();
+    BufferedWriter writer;
+    ArrayList<String> arr1 = new ArrayList<>();
+    ArrayList<String> arr2 = new ArrayList<>();
+
+    public MainGUI() {
         setTitle("Interactions Comparator");
-        setSize(700,700);
+        setSize(700, 700);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
 
 
-
         CreateView();
     }
-    public void CreateView(){
+
+    public void CreateView() {
         JPanel panelMain = new JPanel();
-        panelMain.setPreferredSize(new Dimension(700,700));
+        panelMain.setPreferredSize(new Dimension(700, 700));
         panelMain.setBorder(new TitledBorder("Main"));
         add(panelMain);
 
@@ -53,7 +56,7 @@ public class MainGUI extends JFrame implements ActionListener {
         panelMain.add(buttonOpen);
 
         textAreaInfo = new JTextArea();
-        textAreaInfo.setPreferredSize(new Dimension(600,200));
+        textAreaInfo.setPreferredSize(new Dimension(600, 200));
         panelMain.add(textAreaInfo);
 
         labelSelect = new JLabel("Select types of interaction");
@@ -65,17 +68,17 @@ public class MainGUI extends JFrame implements ActionListener {
         panelMain.add(comboBoxRight);
 
         JPanel panelOutput = new JPanel();
-        panelOutput.setPreferredSize(new Dimension(700,400));
+        panelOutput.setPreferredSize(new Dimension(700, 400));
         panelOutput.setBorder(new TitledBorder("Output"));
         panelMain.add(panelOutput);
 
         panelVenn = new JPanel();
-        panelVenn.setPreferredSize(new Dimension(425,350));
+        panelVenn.setPreferredSize(new Dimension(425, 350));
         panelVenn.setBorder(new TitledBorder("Vennborder"));
         panelOutput.add(panelVenn);
 
         JPanel panelwhy = new JPanel();
-        panelwhy.setPreferredSize(new Dimension(200,200));
+        panelwhy.setPreferredSize(new Dimension(200, 200));
         panelwhy.setBorder(new TitledBorder("why"));
         panelOutput.add(panelwhy);
 
@@ -94,8 +97,6 @@ public class MainGUI extends JFrame implements ActionListener {
         panelwhy.add(buttonExportPub);
 
 
-
-
     }
 
     public void actionPerformed(ActionEvent event) {
@@ -112,7 +113,7 @@ public class MainGUI extends JFrame implements ActionListener {
         }
 
         if (event.getSource() == buttonOpen) {
-            AnalyseFile AnalyseObj = new AnalyseFile();
+
             AnalyseObj.readFile(textFieldFile.getText());
 
             textAreaInfo.setText("Tax ID1 : \t\t" + AnalyseObj.getASize() + " genes\n" + "Tax ID2 : \t\t"
@@ -126,25 +127,48 @@ public class MainGUI extends JFrame implements ActionListener {
             }
         }
 
-        if (event.getSource() == buttonAnalyse){
-            AnalyseFile  AnalyseObj = new AnalyseFile();
-            String key1 = comboBoxLeft.getSelectedItem().toString();
-            String key2 = comboBoxRight.getSelectedItem().toString();
+        if (event.getSource() == buttonAnalyse) {
+
+            key1 = comboBoxLeft.getSelectedItem().toString();
+            key2 = comboBoxRight.getSelectedItem().toString();
             Overlap overlapObj = new Overlap();
             overlapObj.AnalyseoverLap(key1, key2, AnalyseObj.InteractionSet);
 
-            Graphic(overlapObj.getakey1int(),overlapObj.getakey2int(), overlapObj.getoverlap());
+            Graphic(overlapObj.getakey1int(), overlapObj.getakey2int(), overlapObj.getoverlap());
 
         }
-        if(event.getSource() == buttonExportGen){
-            Overlap overlapObj = new Overlap();
-            for(String Gen : overlapObj.getOverlapGenes() ){
-                System.out.println(Gen);
+        if (event.getSource() == buttonExportGen) {
+            WriteFiles writeObj = new WriteFiles();
+
+            try{
+                writeObj.WriteGen(key1, key2, AnalyseObj.TotalInteractions, "PuhMed.txt");
+            }
+            catch (NotValid e){
+                JOptionPane.showMessageDialog(null, e.getMessage());
+            }
+
+
+        }
+
+        if(event.getSource() == buttonExportPub){
+            WriteFiles writeObj = new WriteFiles();
+            try{
+                writeObj.WriteGen(key1, key2, AnalyseObj.TotalInteractions, "PuhMed.txt");
+            }
+            catch (NotValid e){
+                JOptionPane.showMessageDialog(null, e.getMessage());
             }
 
         }
-
     }
+
+
+    /**
+     *
+     * @param left
+     * @param right
+     * @param middle
+     */
     public void Graphic(int left, int right, int middle){
         Graphics g = panelVenn.getGraphics();
 

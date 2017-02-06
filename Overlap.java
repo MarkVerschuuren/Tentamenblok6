@@ -11,7 +11,7 @@ public class Overlap {
     int bkey2int = 0;
     int akey1int = 0;
     int akey2int = 0;
-    HashSet<String> overlapGenes;
+    static HashSet<String> overlapGenes;
 
     public void AnalyseoverLap(String key1, String key2, HashMap<String, HashSet<String>> collectionMap){
 
