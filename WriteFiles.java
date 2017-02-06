@@ -9,11 +9,19 @@ import java.util.ArrayList;
  */
 public class WriteFiles {
     Overlap overlapObj = new Overlap();
-    AnalyseFile AnalyseObj = new AnalyseFile();
     BufferedWriter writer;
     BufferedWriter writer2;
     ArrayList<String> arr1 = new ArrayList<>();
     ArrayList<String> arr2 = new ArrayList<>();
+
+    /**
+     *
+     * @param key1
+     * @param key2
+     * @param inters
+     * @param NameTextFile
+     * @throws NotValid
+     */
 
     public void WriteGen(String key1, String key2, ArrayList<Gene> inters, String NameTextFile) throws NotValid{
         if(overlapObj.getOverlapGenes().isEmpty()){

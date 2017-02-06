@@ -7,7 +7,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class MainGUI extends JFrame implements ActionListener {
     JLabel labelFile, labelSelect;
@@ -18,11 +19,8 @@ public class MainGUI extends JFrame implements ActionListener {
     JFileChooser fileChooser;
     JPanel panelVenn;
     String key1, key2;
-    Overlap overlapObj = new Overlap();
     AnalyseFile AnalyseObj = new AnalyseFile();
-    BufferedWriter writer;
-    ArrayList<String> arr1 = new ArrayList<>();
-    ArrayList<String> arr2 = new ArrayList<>();
+
 
     public MainGUI() {
         setTitle("Interactions Comparator");
@@ -56,7 +54,7 @@ public class MainGUI extends JFrame implements ActionListener {
         panelMain.add(buttonOpen);
 
         textAreaInfo = new JTextArea();
-        textAreaInfo.setPreferredSize(new Dimension(600, 200));
+        textAreaInfo.setPreferredSize(new Dimension(600, 100));
         panelMain.add(textAreaInfo);
 
         labelSelect = new JLabel("Select types of interaction");
@@ -69,37 +67,35 @@ public class MainGUI extends JFrame implements ActionListener {
 
         JPanel panelOutput = new JPanel();
         panelOutput.setPreferredSize(new Dimension(700, 400));
-        panelOutput.setBorder(new TitledBorder("Output"));
         panelMain.add(panelOutput);
 
         panelVenn = new JPanel();
         panelVenn.setPreferredSize(new Dimension(425, 350));
-        panelVenn.setBorder(new TitledBorder("Vennborder"));
         panelOutput.add(panelVenn);
 
-        JPanel panelwhy = new JPanel();
-        panelwhy.setPreferredSize(new Dimension(200, 200));
-        panelwhy.setBorder(new TitledBorder("why"));
-        panelOutput.add(panelwhy);
+        JPanel panelButton = new JPanel();
+        panelButton.setPreferredSize(new Dimension(200, 200));
+        panelOutput.add(panelButton);
 
 
-        buttonAnalyse = new JButton("Analyse");
+        buttonAnalyse = new JButton("   Analyse   ");
         buttonAnalyse.addActionListener(this);
-        panelwhy.add(buttonAnalyse);
+        panelButton.add(buttonAnalyse);
 
 
-        buttonExportGen = new JButton("Export Gen");
+        buttonExportGen = new JButton("  Export Gen  ");
         buttonExportGen.addActionListener(this);
-        panelwhy.add(buttonExportGen);
+        panelButton.add(buttonExportGen);
 
-        buttonExportPub = new JButton("Export Pubmed");
+        buttonExportPub = new JButton("   Export Pubmed   ");
         buttonExportPub.addActionListener(this);
-        panelwhy.add(buttonExportPub);
+        panelButton.add(buttonExportPub);
 
 
     }
 
     public void actionPerformed(ActionEvent event) {
+
         int path;
         File selectedFile;
         if (event.getSource() == buttonSearch) {
@@ -120,8 +116,11 @@ public class MainGUI extends JFrame implements ActionListener {
                     + AnalyseObj.getBSize() + " genes\n" + "# interactions: \t\t" + AnalyseObj.getTotalInteractions() + " interactions \n"
                     + "# types of interactions: \t" + AnalyseObj.getUniqueInterSize() + " interactions");
 
+            ArrayList<String> UniqInteractionSorted = new ArrayList<>(AnalyseObj.UniqueInteractions);
+            Collections.sort(UniqInteractionSorted);
 
-            for (String inter : AnalyseObj.UniqueInteractions) {
+            for (String inter : UniqInteractionSorted) {
+
                 comboBoxLeft.addItem(inter);
                 comboBoxRight.addItem(inter);
             }
@@ -132,9 +131,9 @@ public class MainGUI extends JFrame implements ActionListener {
             key1 = comboBoxLeft.getSelectedItem().toString();
             key2 = comboBoxRight.getSelectedItem().toString();
             Overlap overlapObj = new Overlap();
-            overlapObj.AnalyseoverLap(key1, key2, AnalyseObj.InteractionSet);
+            overlapObj.AnalyseoverLap(key1, key2, AnalyseObj.InteractionMap);
 
-            Graphic(overlapObj.getakey1int(), overlapObj.getakey2int(), overlapObj.getoverlap());
+            Graphic(overlapObj.getakey1int(), overlapObj.getakey2int(), overlapObj.getoverlap(),key1,key2);
 
         }
         if (event.getSource() == buttonExportGen) {
@@ -169,11 +168,12 @@ public class MainGUI extends JFrame implements ActionListener {
      * @param right
      * @param middle
      */
-    public void Graphic(int left, int right, int middle){
+    public void Graphic(int left, int right, int middle,String key1, String key2){
         Graphics g = panelVenn.getGraphics();
-
+        g.drawString(key1, 110, 80);
         g.drawString(Integer.toString(left),165,165);
         g.drawOval(210,95,150,150);
+        g.drawString(key2, 270, 80);
         g.drawString(Integer.toString(middle),220,165);
         g.drawOval(90,95,150,150);
         g.drawString(Integer.toString(right),270,165);

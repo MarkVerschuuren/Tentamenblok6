@@ -18,19 +18,10 @@ public class Overlap {
 
         bkey1int = collectionMap.get(key1).size();
         bkey2int = collectionMap.get(key2).size();
-        System.out.println("before Retain all : \n" + "key1 size: " + bkey1int + "\n" + collectionMap.get(key1) + "\n"
-                        + "key2 size: " + bkey2int + "\n" + collectionMap.get(key2) + "\n");
-
         collectionMap.get(key1).retainAll(collectionMap.get(key2));
-
         overlap = collectionMap.get(key1).size();
         akey1int = bkey1int - overlap;
         akey2int = bkey2int  - overlap;
-
-        System.out.println("Overlap : " + overlap + "\n" +
-                collectionMap.get(key1) + "\n" + "After retain all: \n" + "key1 size: " + akey1int + "\n" +
-                " key2 size: " + akey2int + "\n");
-
         overlapGenes = collectionMap.get(key1);
     }
 
