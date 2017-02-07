@@ -21,7 +21,9 @@ public class MainGUI extends JFrame implements ActionListener {
     String key1, key2;
     AnalyseFile AnalyseObj = new AnalyseFile();
 
-
+    /**
+     * Constructor for the GUI. Sets size and some other configurations. The method to create the object in the GUI is defined here.
+     */
     public MainGUI() {
         setTitle("Interactions Comparator");
         setSize(700, 700);
@@ -33,6 +35,9 @@ public class MainGUI extends JFrame implements ActionListener {
         CreateView();
     }
 
+    /**
+     * Method to create all the object in the GUI. ALl the button get an actionlistener.
+     */
     public void CreateView() {
         JPanel panelMain = new JPanel();
         panelMain.setPreferredSize(new Dimension(700, 700));
@@ -78,22 +83,40 @@ public class MainGUI extends JFrame implements ActionListener {
         panelOutput.add(panelButton);
 
 
-        buttonAnalyse = new JButton("   Analyse   ");
+        buttonAnalyse = new JButton("Analyse");
+        buttonAnalyse.setPreferredSize(new Dimension(150,25));
         buttonAnalyse.addActionListener(this);
         panelButton.add(buttonAnalyse);
 
 
-        buttonExportGen = new JButton("  Export Gen  ");
+        buttonExportGen = new JButton("Export Gen");
+        buttonExportGen.setPreferredSize(new Dimension(150,25));
         buttonExportGen.addActionListener(this);
         panelButton.add(buttonExportGen);
 
-        buttonExportPub = new JButton("   Export Pubmed   ");
+        buttonExportPub = new JButton("Export Pubmed");
+        buttonExportPub.setPreferredSize(new Dimension(150,25));
         buttonExportPub.addActionListener(this);
         panelButton.add(buttonExportPub);
 
 
     }
 
+    /**
+     * Method which get activated when there is an click on any button. The event.getSource statements define which button will be used.
+     * The file gets selected with the buttonSearch.
+     *
+     * The file gets read with the buttonOpen. This will happen in Analysefile. The data wil also be analysed and will show some statistics.
+     *
+     * buttonAnalyse analyses the data which then will show an overlap.
+     *
+     * buttonExportgen add all overlapping genes in a textfile with the corresponding information of this gene.
+     * buttonExportPub add all overlapping genes in a textfile with the corresponding pubmed ID.
+     * When there are no overlapping genes there will be an screen which says you cant put any genes in the file, because there are none.
+     *
+     *
+     * @param event Variable which know which button is activated when.
+     */
     public void actionPerformed(ActionEvent event) {
 
         int path;
@@ -133,14 +156,14 @@ public class MainGUI extends JFrame implements ActionListener {
             Overlap overlapObj = new Overlap();
             overlapObj.AnalyseoverLap(key1, key2, AnalyseObj.InteractionMap);
 
-            Graphic(overlapObj.getakey1int(), overlapObj.getakey2int(), overlapObj.getoverlap(),key1,key2);
+            Graphic(overlapObj.getakey1int(), overlapObj.getakey2int(), overlapObj.getoverlapsize(),key1,key2);
 
         }
         if (event.getSource() == buttonExportGen) {
             WriteFiles writeObj = new WriteFiles();
 
             try{
-                writeObj.WriteGen(key1, key2, AnalyseObj.TotalInteractions, "PuhMed.txt");
+                writeObj.WriteGen(key1, key2, AnalyseObj.TotalInteractions, "Gen.txt");
             }
             catch (NotValid e){
                 JOptionPane.showMessageDialog(null, e.getMessage());
@@ -152,7 +175,7 @@ public class MainGUI extends JFrame implements ActionListener {
         if(event.getSource() == buttonExportPub){
             WriteFiles writeObj = new WriteFiles();
             try{
-                writeObj.WriteGen(key1, key2, AnalyseObj.TotalInteractions, "PuhMed.txt");
+                writeObj.WriteGen(key1, key2, AnalyseObj.TotalInteractions, "PubMed.txt");
             }
             catch (NotValid e){
                 JOptionPane.showMessageDialog(null, e.getMessage());
@@ -163,10 +186,11 @@ public class MainGUI extends JFrame implements ActionListener {
 
 
     /**
+     * This method makes the circles which visualize the overlap. It also show which geneID are not in the overlap.
      *
-     * @param left
-     * @param right
-     * @param middle
+     * @param left Variable to define the left part of interaction, it contains a int which defines the amount of genes who do not overlap
+     * @param right Variable to define the right part of interaction, it contains a int which defines the amount of genes who do not overlap
+     * @param middle Variable to define the overlap.
      */
     public void Graphic(int left, int right, int middle,String key1, String key2){
         Graphics g = panelVenn.getGraphics();
